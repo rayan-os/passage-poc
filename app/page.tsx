@@ -4,11 +4,12 @@ import { Section } from "@/components/landing/Layout";
 import { COPY } from "@/components/landing/copy";
 import PipelineStrip from "@/components/landing/PipelineStrip";
 import OutcomeStrip from "@/components/landing/OutcomeStrip";
-import AgentCards from "@/components/landing/AgentCards";
 import ProofSection from "@/components/landing/ProofSection";
 import IntegrationsGrid from "@/components/landing/IntegrationsGrid";
 import FounderCard from "@/components/landing/FounderCard";
 import FinalCTABand from "@/components/landing/FinalCTABand";
+import VoiceAgents from "@/components/landing/VoiceAgents";
+import DataFlowDots from "@/components/landing/DataFlowDots";
 
 const PromptConsole = dynamic(() => import("@/components/landing/PromptConsole"), {
   ssr: false,
@@ -33,7 +34,10 @@ export default function Home() {
       </Section>
 
       <Section id="agents" eyebrow="Agents" title={COPY.agents.header} subtitle={COPY.agents.body}>
-        <AgentCards />
+        <div className="space-y-6">
+          <VoiceAgents />
+          <DataFlowDots />
+        </div>
       </Section>
 
       <ProofSection />
