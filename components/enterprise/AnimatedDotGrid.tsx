@@ -1,20 +1,16 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
-
 type AnimatedDotGridProps = {
   className?: string;
 };
 
 export default function AnimatedDotGrid({ className }: AnimatedDotGridProps) {
-  const reduceMotion = useReducedMotion();
-
   return (
     <div className={className}>
       {/* Dot grid */}
-      <motion.div
+      <div
         aria-hidden="true"
-        className="absolute inset-0 pointer-events-none"
+        className="absolute inset-0 pointer-events-none motion-safe:[animation:dot-grid-drift_14s_linear_infinite]"
         style={{
           backgroundImage:
             "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.08) 1px, transparent 1.5px)",
@@ -22,22 +18,6 @@ export default function AnimatedDotGrid({ className }: AnimatedDotGridProps) {
           maskImage: "radial-gradient(60% 60% at 50% 30%, black, transparent 70%)",
           WebkitMaskImage: "radial-gradient(60% 60% at 50% 30%, black, transparent 70%)",
         }}
-        animate={
-          reduceMotion
-            ? undefined
-            : {
-                backgroundPosition: ["0px 0px", "28px 28px"],
-              }
-        }
-        transition={
-          reduceMotion
-            ? undefined
-            : {
-                duration: 14,
-                ease: "linear",
-                repeat: Infinity,
-              }
-        }
       />
 
       {/* Soft gradient glow */}

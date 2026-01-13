@@ -73,6 +73,15 @@
   background: hsl(var(--accent));
 }
 
+@keyframes dot-grid-drift {
+  from {
+    background-position: 0px 0px;
+  }
+  to {
+    background-position: 28px 28px;
+  }
+}
+
 @layer utilities {
   .section-label {
     @apply text-xs uppercase tracking-wider font-mono text-muted-foreground mb-3;
@@ -85,5 +94,25 @@
   
   .grid-12 {
     @apply grid grid-cols-12 gap-6;
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 600ms ease, transform 600ms ease;
+    will-change: opacity, transform;
+  }
+
+  .reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
   }
 }

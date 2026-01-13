@@ -5,14 +5,17 @@ import AgentsModules from "@/components/enterprise/AgentsModules";
 import PlatformPrimitives from "@/components/enterprise/PlatformPrimitives";
 import ProofTrust from "@/components/enterprise/ProofTrust";
 import FinalCTA from "@/components/enterprise/FinalCTA";
+import { AgentHighlightProvider } from "@/components/enterprise/AgentHighlightContext";
 
 export default function Home() {
   return (
     <>
       <HeroEnterprise />
       <BuyerSelector />
-      <HowItWorksPipeline />
-      <AgentsModules />
+      <AgentHighlightProvider>
+        <HowItWorksPipeline />
+        <AgentsModules />
+      </AgentHighlightProvider>
       <PlatformPrimitives />
       <ProofTrust />
       <FinalCTA />
