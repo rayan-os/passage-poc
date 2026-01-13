@@ -17,7 +17,7 @@ export default function ProofLogos({ count }: { count: number }) {
       transition={
         reduce || paused
           ? undefined
-          : { duration: 50 + offset, ease: "linear", repeat: Infinity }
+          : { duration: 80 + offset, ease: "linear", repeat: Infinity }
       }
       style={{ willChange: "transform" }}
     >

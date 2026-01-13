@@ -16,7 +16,18 @@ export default function Hero() {
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(900px 420px at 30% 18%, rgba(139,92,246,0.18), transparent 60%), radial-gradient(900px 520px at 70% 26%, rgba(139,92,246,0.10), transparent 62%), radial-gradient(800px 520px at 50% 85%, rgba(255,255,255,0.06), transparent 60%)",
+              "radial-gradient(900px 420px at 30% 18%, rgba(139,92,246,0.14), transparent 62%), radial-gradient(900px 520px at 70% 26%, rgba(139,92,246,0.08), transparent 64%), radial-gradient(900px 520px at 50% 85%, rgba(255,255,255,0.05), transparent 62%)",
+          }}
+        />
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 opacity-[0.35]"
+          style={{
+            backgroundImage:
+              "linear-gradient(to right, rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px)",
+            backgroundSize: "72px 72px",
+            maskImage: "radial-gradient(70% 60% at 50% 25%, black, transparent 68%)",
+            WebkitMaskImage: "radial-gradient(70% 60% at 50% 25%, black, transparent 68%)",
           }}
         />
         <Noise />

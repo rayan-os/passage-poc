@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Space_Mono } from "next/font/google";
+import { Fraunces, Inter, Space_Mono } from "next/font/google";
 import "./globals.css";
 import Navigation from "@/components/Navigation";
 import BigFooter from "@/components/BigFooter";
@@ -17,11 +17,10 @@ const spaceMono = Space_Mono({
   display: "swap",
 });
 
-// Using Inter as display font (can be swapped for a premium display font later)
-const display = Inter({
+// Display font: restrained serif, operator vibe.
+const display = Fraunces({
   variable: "--font-display",
   subsets: ["latin"],
-  weight: ["600", "700", "800"],
   display: "swap",
 });
 
