@@ -31,8 +31,8 @@ function OutputPane({ kind }: { kind: OutputKind }) {
     return (
       <div className="text-sm text-foreground/90">
         <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground">Missing docs</p>
-        <div className="mt-4 rounded-xl border border-border bg-background/20 overflow-hidden">
-          <div className="grid grid-cols-3 text-xs text-muted-foreground px-4 py-2 border-b border-border">
+        <div className="mt-4 bg-background/10 overflow-hidden">
+          <div className="grid grid-cols-3 text-xs text-muted-foreground px-4 py-2 border-b border-border/60">
             <span>Applicant</span>
             <span>Missing</span>
             <span>Status</span>
@@ -41,8 +41,10 @@ function OutputPane({ kind }: { kind: OutputKind }) {
             ["A. Rivera", "Transcript", "Requested"],
             ["M. Chen", "ID", "Pending"],
             ["S. Patel", "Recommendation", "Requested"],
+            ["J. Okafor", "Residency", "Pending"],
+            ["L. Nguyen", "Essay", "Requested"],
           ].map((r) => (
-            <div key={r[0]} className="grid grid-cols-3 px-4 py-2 text-xs text-foreground/85 border-b border-border last:border-b-0">
+            <div key={r[0]} className="grid grid-cols-3 px-4 py-2 text-xs text-foreground/85 border-b border-border/60 last:border-b-0">
               <span>{r[0]}</span>
               <span className="text-muted-foreground">{r[1]}</span>
               <span className="text-muted-foreground">{r[2]}</span>
@@ -88,15 +90,15 @@ function OutputPane({ kind }: { kind: OutputKind }) {
       <ul className="mt-4 space-y-2 text-xs text-muted-foreground">
         <li className="flex items-center justify-between gap-6">
           <span>Missing document proof</span>
-          <span className="text-foreground/85">12</span>
+          <span className="font-mono text-foreground/85">12</span>
         </li>
         <li className="flex items-center justify-between gap-6">
           <span>Awaiting review queue</span>
-          <span className="text-foreground/85">7</span>
+          <span className="font-mono text-foreground/85">7</span>
         </li>
         <li className="flex items-center justify-between gap-6">
           <span>Policy conflict</span>
-          <span className="text-foreground/85">3</span>
+          <span className="font-mono text-foreground/85">3</span>
         </li>
       </ul>
     </div>
@@ -186,7 +188,7 @@ export default function PromptConsole() {
         </motion.div>
       )}
 
-      <div className="border border-border bg-card/20 backdrop-blur-sm overflow-hidden">
+      <div className="panel panel-sharp panel-topline overflow-hidden">
         <div className="grid grid-cols-1 md:grid-cols-12">
           <div className="md:col-span-5 border-b md:border-b-0 md:border-r border-border p-6 md:p-7">
             <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground">Command</p>
@@ -197,10 +199,7 @@ export default function PromptConsole() {
               <label className="sr-only" htmlFor="console-input">
                 Question
               </label>
-              <div
-                ref={inputWrapRef}
-                className="flex items-center gap-2 border border-border bg-background/10 px-3 py-2 focus-within:ring-2 focus-within:ring-ring/50"
-              >
+              <div ref={inputWrapRef} className="flex items-center gap-2 bg-background/10 px-3 py-2 focus-within:ring-2 focus-within:ring-ring/50">
                 <span className={["h-2 w-2", ACCENT.bgSoft].join(" ")} />
                 <input
                   id="console-input"
@@ -233,7 +232,7 @@ export default function PromptConsole() {
               <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground">Output</p>
               <span className={["h-2 w-2 rounded-full", ACCENT.bgSoft].join(" ")} />
             </div>
-            <div className="mt-6 border border-border bg-background/10 p-5 min-h-[180px]">
+            <div className="mt-6 bg-background/10 p-5 min-h-[180px]">
               <motion.div
                 key={outputKind}
                 initial={reduce ? undefined : { opacity: 0, y: 6 }}
@@ -252,9 +251,10 @@ export default function PromptConsole() {
         </div>
       </div>
 
-      <div className="mt-8 -mx-2 md:-mx-4">
+      {/* Full-width prompt cloud lanes, never clipped */}
+      <div className="mt-8 relative left-1/2 -translate-x-1/2 w-screen px-6 lg:px-8">
         <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground">Prompt cloud</p>
-        <div className="mt-4 space-y-3">
+        <div className="mt-4 hidden md:block space-y-3">
           {lanes.map((lane, laneIdx) => (
             <PromptLane
               key={laneIdx}
@@ -275,6 +275,32 @@ export default function PromptConsole() {
               }}
               busy={busy}
             />
+          ))}
+        </div>
+        <div className="mt-4 md:hidden flex flex-wrap gap-2">
+          {COPY.console.prompts.map((p) => (
+            <button
+              key={p}
+              type="button"
+              disabled={busy}
+              onClick={(e) => {
+                const rect = (e.currentTarget as HTMLButtonElement).getBoundingClientRect();
+                const target = inputWrapRef.current?.getBoundingClientRect();
+                if (rect && target && !reduce) {
+                  setFlying({
+                    text: p,
+                    from: { x: rect.left, y: rect.top, w: rect.width, h: rect.height },
+                    to: { x: target.left + 12, y: target.top + 6 },
+                  });
+                  window.setTimeout(() => void runPrompt(p, true), 260);
+                } else {
+                  void runPrompt(p, true);
+                }
+              }}
+              className="border border-border bg-background/10 px-3 py-2 text-xs font-mono text-muted-foreground hover:text-foreground hover:bg-background/20 transition-colors disabled:opacity-60"
+            >
+              {p}
+            </button>
           ))}
         </div>
       </div>

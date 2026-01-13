@@ -28,8 +28,8 @@ export default function ProofLogos({ count }: { count: number }) {
       style={{ willChange: "transform" }}
     >
       {[...logos, ...logos].map((l, idx) => (
-        <div key={`${l}-${idx}`} className="h-9 px-4 border border-border bg-background/20 flex items-center">
-          <span className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground">{l}</span>
+        <div key={`${l}-${idx}`} className="h-9 px-4 bg-background/10 flex items-center">
+          <span className="text-[11px] font-mono uppercase tracking-wider text-foreground/35">{l}</span>
         </div>
       ))}
     </motion.div>
@@ -37,7 +37,7 @@ export default function ProofLogos({ count }: { count: number }) {
 
   return (
     <div
-      className="overflow-hidden border border-border bg-card/10 backdrop-blur-sm p-4"
+      className="overflow-hidden panel panel-sharp panel-topline p-4"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >

@@ -60,10 +60,16 @@ function AgentCard({
 }) {
   const { x, y, rotateX, rotateY } = useParallax();
   const io = useMemo(() => agentIO(title), [title]);
+  const lastRun = useMemo(() => {
+    const now = Date.now();
+    const minutes = 2 + (title.length % 6);
+    const ts = new Date(now - minutes * 60 * 1000);
+    return ts.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
+  }, [title]);
 
   return (
     <motion.div
-      className="relative border border-border bg-card/20 backdrop-blur-sm p-4 hover:bg-card/30 transition-colors"
+      className="panel panel-sharp panel-topline relative p-4 hover:bg-card/35 transition-colors"
       initial={reduce ? undefined : { opacity: 0, y: 10 }}
       whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.25 }}
@@ -93,20 +99,23 @@ function AgentCard({
       <div className="relative flex items-start justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className={["h-2 w-2", "bg-violet-400/80", "animate-pulse"].join(" ")} aria-hidden="true" />
+            <span
+              className="h-2 w-2 rounded-full bg-foreground/40 motion-safe:[animation:status-pulse_3.2s_ease-in-out_infinite]"
+              aria-hidden="true"
+            />
             <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground">{index}</p>
           </div>
           <h3 className="mt-2 font-display text-xl font-bold tracking-tight">{title}</h3>
         </div>
-        <div className={["h-9 w-9 border bg-background/20 flex items-center justify-center", ACCENT.border].join(" ")}>
-          <span className={["text-xs font-mono text-muted-foreground"].join(" ")} aria-hidden="true">
+        <div className="h-9 w-9 bg-background/20 flex items-center justify-center">
+          <span className="text-xs font-mono text-muted-foreground" aria-hidden="true">
             {glyph(title)}
           </span>
         </div>
       </div>
       <p className="mt-4 text-sm text-muted-foreground">{body}</p>
 
-      <div className="mt-4 h-px w-full bg-border/70" />
+      <div className="mt-4 divider" />
       <div className="mt-3 grid grid-cols-2 gap-3 text-xs">
         <div>
           <p className="font-mono uppercase tracking-wider text-muted-foreground">Inputs</p>
@@ -116,6 +125,9 @@ function AgentCard({
           <p className="font-mono uppercase tracking-wider text-muted-foreground">Outputs</p>
           <p className="mt-1 text-muted-foreground">{io.outputs}</p>
         </div>
+      </div>
+      <div className="mt-3 text-[11px] font-mono text-muted-foreground">
+        Last run {lastRun}
       </div>
     </motion.div>
   );

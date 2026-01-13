@@ -28,7 +28,7 @@ export default function PipelineStrip() {
   return (
     <div
       ref={containerRef}
-      className="border border-border bg-card/20 backdrop-blur-sm p-6 md:p-7"
+      className="panel panel-sharp panel-topline p-6 md:p-7"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => {
         setPaused(false);
@@ -69,7 +69,7 @@ export default function PipelineStrip() {
               </button>
 
               {hovered === idx && (
-                <div className="absolute -top-12 left-1/2 -translate-x-1/2 whitespace-nowrap border border-border bg-background/80 backdrop-blur px-3 py-2 text-xs text-foreground/90">
+                <div className="absolute -top-12 left-1/2 -translate-x-1/2 whitespace-nowrap panel panel-sharp panel-topline px-3 py-2 text-xs text-foreground/90">
                   {tooltips[idx] ?? ""}
                 </div>
               )}
@@ -80,8 +80,8 @@ export default function PipelineStrip() {
         {/* Pulse that moves across nodes */}
         <motion.div
           aria-hidden="true"
-          className={["absolute top-1/2 -translate-y-1/2 h-2 w-2", ACCENT.bgSoft].join(" ")}
-          style={{ borderRadius: 0 }}
+          className={["absolute top-1/2 -translate-y-1/2 h-2 w-2 bg-violet-400/70"].join(" ")}
+          style={{ borderRadius: 2 }}
           animate={
             reduce || paused
               ? undefined
@@ -97,7 +97,7 @@ export default function PipelineStrip() {
         />
       </div>
 
-      <div className="mt-6 h-px w-full bg-border/70" />
+      <div className="mt-6 divider" />
       <p className="mt-4 text-sm text-muted-foreground">
         A governed workflow with clear state, clear ownership, and measurable outcomes.
       </p>

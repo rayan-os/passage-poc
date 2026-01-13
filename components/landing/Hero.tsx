@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
-import HeroDiagram from "@/components/landing/HeroDiagram";
 import Noise from "@/components/landing/Noise";
+import HeroControlPlane from "@/components/landing/HeroControlPlane";
 import { ACCENT, COPY } from "@/components/landing/copy";
 
 export default function Hero() {
@@ -12,10 +12,11 @@ export default function Hero() {
   return (
     <section className="relative overflow-hidden">
       <div aria-hidden="true" className="absolute inset-0">
+        {/* Very subtle noise, no soft gradients */}
         <Noise />
       </div>
 
-      <div className="container-grid relative py-24 md:py-32 lg:py-36">
+      <div className="container-grid relative py-20 md:py-24 lg:py-28">
         <div className="grid-12 items-start">
           <div className="col-span-12 lg:col-span-6">
             <motion.p
@@ -95,12 +96,12 @@ export default function Hero() {
           </div>
 
           <div className="col-span-12 lg:col-span-6 mt-12 lg:mt-0">
-            <HeroDiagram />
+            <HeroControlPlane />
           </div>
         </div>
       </div>
 
-      <div aria-hidden="true" className="border-t border-border" />
+      <div aria-hidden="true" className="border-t border-border/70" />
     </section>
   );
 }
