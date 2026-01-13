@@ -8,7 +8,7 @@ export default function Navigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-border bg-background/75 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <nav className="sticky top-0 z-50 border-b border-border bg-background/70 backdrop-blur supports-[backdrop-filter]:bg-background/55">
       <div className="container-grid">
         <div className="flex h-16 items-center justify-between">
           <Link href="/" className="font-display text-xl font-bold tracking-tight text-foreground">
@@ -28,7 +28,7 @@ export default function Navigation() {
           <div className="flex items-center gap-4">
             <Link
               href={COPY.nav.cta.href}
-              className="hidden md:inline-flex px-4 py-2 text-sm font-medium rounded-full border border-border bg-background/70 hover:bg-background text-foreground transition-colors shadow-sm"
+              className="hidden md:inline-flex px-4 py-2 text-sm font-medium border border-border bg-secondary/20 hover:bg-secondary/35 text-foreground transition-colors"
             >
               {COPY.nav.cta.label}
             </Link>

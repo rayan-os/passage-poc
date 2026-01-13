@@ -7,7 +7,13 @@ export default function ProofLogos({ count }: { count: number }) {
   const reduce = useReducedMotion();
   const [paused, setPaused] = useState(false);
 
-  const logos = useMemo(() => Array.from({ length: count }).map((_, i) => `Logo ${i + 1}`), [count]);
+  const logos = useMemo(
+    () =>
+      Array.from({ length: count }).map((_, i) =>
+        ["INSTITUTION", "PROGRAM", "UNIVERSITY", "SYSTEM", "OFFICE"][i % 5] + ` ${i + 1}`
+      ),
+    [count]
+  );
 
   // Two lanes to create continuity.
   const lane = (offset: number) => (
@@ -22,19 +28,16 @@ export default function ProofLogos({ count }: { count: number }) {
       style={{ willChange: "transform" }}
     >
       {[...logos, ...logos].map((l, idx) => (
-        <div
-          key={`${l}-${idx}`}
-          className="h-10 w-28 rounded-lg border border-border bg-background/20"
-          aria-label={l}
-          role="img"
-        />
+        <div key={`${l}-${idx}`} className="h-9 px-4 border border-border bg-background/20 flex items-center">
+          <span className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground">{l}</span>
+        </div>
       ))}
     </motion.div>
   );
 
   return (
     <div
-      className="overflow-hidden rounded-2xl border border-border bg-card/15 backdrop-blur-sm p-4"
+      className="overflow-hidden border border-border bg-card/10 backdrop-blur-sm p-4"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >

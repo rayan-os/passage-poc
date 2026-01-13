@@ -2,11 +2,11 @@ export const ACCENT = {
   name: "violet",
   // Tailwind token choice: keep accent subtle, consistent.
   text: "text-violet-300",
-  border: "border-violet-500/30",
-  ring: "ring-violet-400/30",
-  glow: "shadow-[0_0_0_1px_rgba(139,92,246,0.20),0_0_42px_rgba(139,92,246,0.12)]",
-  bgSoft: "bg-violet-500/10",
-  stroke: "rgba(139,92,246,0.90)",
+  border: "border-violet-400/35",
+  ring: "ring-violet-400/25",
+  glow: "shadow-[0_0_0_1px_rgba(167,139,250,0.22),0_0_40px_rgba(139,92,246,0.10)]",
+  bgSoft: "bg-violet-500/12",
+  stroke: "rgba(167,139,250,0.95)",
 };
 
 export const COPY = {
@@ -78,11 +78,11 @@ export const COPY = {
     header: "Works with what you already use",
     body: "Deploy without rebuilding your stack.",
     categories: [
-      { title: "Student Systems", chips: ["SIS A", "SIS B", "SIS C", "SIS D", "SIS E"] },
-      { title: "CRM and Comms", chips: ["CRM A", "CRM B", "CRM C", "Comms A", "Comms B"] },
-      { title: "Document Sources", chips: ["Docs A", "Docs B", "Drive", "Email", "Uploads"] },
-      { title: "Identity and Security", chips: ["SSO", "RBAC", "SCIM", "MFA", "Audit"] },
-      { title: "Data and Reporting", chips: ["Warehouse", "BI", "Exports", "Events", "Logs"] },
+      { title: "Student Systems", chips: ["Student system", "LMS", "Roster", "Directory", "Forms", "SFTP"] },
+      { title: "CRM and Comms", chips: ["CRM", "Email", "SMS", "Call center", "Templates", "Webhooks"] },
+      { title: "Document Sources", chips: ["Uploads", "Drive", "Email intake", "Scan", "S3", "Archive"] },
+      { title: "Identity and Security", chips: ["SSO", "SAML", "OIDC", "SCIM", "RBAC", "Audit"] },
+      { title: "Data and Reporting", chips: ["Warehouse", "BI", "Exports", "Events", "Logs", "APIs"] },
     ],
   },
   console: {

@@ -1,59 +1,100 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { ACCENT, COPY } from "@/components/landing/copy";
 
 export default function PipelineStrip() {
   const reduce = useReducedMotion();
   const stages = COPY.platformClaim.stages;
-  const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [hovered, setHovered] = useState<number | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   const items = useMemo(() => stages.map((s, idx) => ({ s, idx })), [stages]);
 
-  useEffect(() => {
-    if (reduce || paused) return;
-    const id = window.setInterval(() => setActive((a) => (a + 1) % stages.length), 8000 / stages.length);
-    return () => window.clearInterval(id);
-  }, [reduce, paused, stages.length]);
+  const tooltips = useMemo(
+    () => [
+      "Ingest, collect and normalize inputs",
+      "Verify, document checks and proof",
+      "Decide, apply rules and rationale",
+      "Follow up, requests and reminders",
+      "LOA, generate and track outputs",
+      "Report, metrics and audits",
+    ],
+    []
+  );
 
   return (
     <div
-      className="rounded-2xl border border-border bg-card/20 backdrop-blur-sm p-6 md:p-8"
+      ref={containerRef}
+      className="border border-border bg-card/20 backdrop-blur-sm p-6 md:p-7"
       onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
+      onMouseLeave={() => {
+        setPaused(false);
+        setHovered(null);
+      }}
     >
       <div className="flex items-center justify-between gap-4">
         <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground">Pipeline</p>
         <span className={["h-2 w-2 rounded-full", ACCENT.bgSoft].join(" ")} />
       </div>
 
-      <div className="mt-6 flex flex-wrap items-center gap-2">
-        {items.map(({ s, idx }) => {
-          const isActive = idx === active;
-          return (
-            <div key={s} className="flex items-center gap-2">
-              <motion.div
+      <div className="mt-6 relative">
+        <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-px bg-border/80" aria-hidden="true" />
+
+        <div className="relative grid grid-cols-6 gap-2">
+          {items.map(({ s, idx }) => (
+            <div key={s} className="relative flex justify-center">
+              <button
+                type="button"
                 className={[
-                  "rounded-full border px-3 py-1 text-xs font-medium",
-                  isActive ? `${ACCENT.border} ${ACCENT.bgSoft} text-foreground` : "border-border bg-background/20 text-muted-foreground",
+                  "group flex flex-col items-center gap-2 text-left",
+                  "focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
                 ].join(" ")}
-                animate={
-                  reduce
-                    ? undefined
-                    : isActive
-                      ? { boxShadow: "0 0 0 1px rgba(139,92,246,0.22), 0 0 28px rgba(139,92,246,0.10)" }
-                      : { boxShadow: "0 0 0 0 rgba(0,0,0,0)" }
-                }
-                transition={{ duration: 0.35, ease: "easeOut" }}
+                onMouseEnter={() => setHovered(idx)}
+                onFocus={() => setHovered(idx)}
+                onBlur={() => setHovered(null)}
               >
-                {s}
-              </motion.div>
-              {idx < items.length - 1 && <span className="text-muted-foreground/70">→</span>}
+                <span
+                  className={[
+                    "h-2.5 w-2.5 border border-border bg-background",
+                    hovered === idx ? ACCENT.border : "",
+                  ].join(" ")}
+                  aria-hidden="true"
+                />
+                <span className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground group-hover:text-foreground transition-colors">
+                  {s}
+                </span>
+              </button>
+
+              {hovered === idx && (
+                <div className="absolute -top-12 left-1/2 -translate-x-1/2 whitespace-nowrap border border-border bg-background/80 backdrop-blur px-3 py-2 text-xs text-foreground/90">
+                  {tooltips[idx] ?? ""}
+                </div>
+              )}
             </div>
-          );
-        })}
+          ))}
+        </div>
+
+        {/* Pulse that moves across nodes */}
+        <motion.div
+          aria-hidden="true"
+          className={["absolute top-1/2 -translate-y-1/2 h-2 w-2", ACCENT.bgSoft].join(" ")}
+          style={{ borderRadius: 0 }}
+          animate={
+            reduce || paused
+              ? undefined
+              : {
+                  left: ["0%", "100%"],
+                }
+          }
+          transition={
+            reduce || paused
+              ? undefined
+              : { duration: 7, ease: "linear", repeat: Infinity }
+          }
+        />
       </div>
 
       <div className="mt-6 h-px w-full bg-border/70" />

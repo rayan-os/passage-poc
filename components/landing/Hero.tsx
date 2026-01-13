@@ -12,24 +12,6 @@ export default function Hero() {
   return (
     <section className="relative overflow-hidden">
       <div aria-hidden="true" className="absolute inset-0">
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(900px 520px at 25% 18%, rgba(139,92,246,0.16), transparent 62%), radial-gradient(900px 520px at 70% 26%, rgba(139,92,246,0.10), transparent 64%), radial-gradient(900px 520px at 50% 85%, rgba(0,0,0,0.05), transparent 62%)",
-          }}
-        />
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 opacity-[0.25]"
-          style={{
-            backgroundImage:
-              "linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.04) 1px, transparent 1px)",
-            backgroundSize: "72px 72px",
-            maskImage: "radial-gradient(70% 60% at 50% 25%, black, transparent 68%)",
-            WebkitMaskImage: "radial-gradient(70% 60% at 50% 25%, black, transparent 68%)",
-          }}
-        />
         <Noise />
       </div>
 
@@ -91,7 +73,7 @@ export default function Hero() {
                 href="#platform"
                 className={[
                   "group inline-flex items-center justify-center rounded-md border px-5 py-3 text-sm font-medium",
-                  "border-border bg-background/60 hover:bg-background/80 text-foreground transition-colors shadow-sm",
+                  "border-border bg-secondary/20 hover:bg-secondary/35 text-foreground transition-colors",
                   "focus:outline-none focus:ring-2 focus:ring-ring/60",
                 ].join(" ")}
               >

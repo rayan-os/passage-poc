@@ -30,7 +30,14 @@ export default function AgentCards() {
       {[columns.left, columns.right].map((col, colIdx) => (
         <div key={colIdx} className="space-y-4 md:space-y-6">
           {col.map((c, idx) => (
-            <AgentCard key={c.title} index={c.index} title={c.title} body={c.body} delay={(colIdx * 0.1) + idx * 0.08} reduce={reduce} />
+            <AgentCard
+              key={c.title}
+              index={c.index}
+              title={c.title}
+              body={c.body}
+              delay={(colIdx * 0.1) + idx * 0.08}
+              reduce={reduce}
+            />
           ))}
         </div>
       ))}
@@ -52,10 +59,11 @@ function AgentCard({
   reduce: boolean;
 }) {
   const { x, y, rotateX, rotateY } = useParallax();
+  const io = useMemo(() => agentIO(title), [title]);
 
   return (
     <motion.div
-      className="relative rounded-2xl border border-border bg-card/20 backdrop-blur-sm p-6 hover:bg-card/30 transition-colors"
+      className="relative border border-border bg-card/20 backdrop-blur-sm p-4 hover:bg-card/30 transition-colors"
       initial={reduce ? undefined : { opacity: 0, y: 10 }}
       whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.25 }}
@@ -73,26 +81,61 @@ function AgentCard({
         y.set(0);
       }}
       style={reduce ? undefined : { rotateX, rotateY, transformStyle: "preserve-3d" }}
-      whileHover={reduce ? undefined : { y: -4 }}
+      whileHover={reduce ? undefined : { y: -2 }}
     >
       <div
         aria-hidden="true"
         className={[
-          "absolute inset-0 rounded-2xl opacity-0 hover:opacity-100 transition-opacity duration-200 pointer-events-none",
+          "absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-200 pointer-events-none",
           ACCENT.glow,
         ].join(" ")}
       />
       <div className="relative flex items-start justify-between gap-4">
         <div>
-          <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground">{index}</p>
-          <h3 className="mt-2 font-display text-2xl font-bold tracking-tight">{title}</h3>
+          <div className="flex items-center gap-2">
+            <span className={["h-2 w-2", "bg-violet-400/80", "animate-pulse"].join(" ")} aria-hidden="true" />
+            <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground">{index}</p>
+          </div>
+          <h3 className="mt-2 font-display text-xl font-bold tracking-tight">{title}</h3>
         </div>
-        <div className={["h-10 w-10 rounded-xl border bg-background/20 flex items-center justify-center", ACCENT.border].join(" ")}>
-          <span className={["h-2.5 w-2.5 rounded-full", ACCENT.bgSoft].join(" ")} />
+        <div className={["h-9 w-9 border bg-background/20 flex items-center justify-center", ACCENT.border].join(" ")}>
+          <span className={["text-xs font-mono text-muted-foreground"].join(" ")} aria-hidden="true">
+            {glyph(title)}
+          </span>
         </div>
       </div>
       <p className="mt-4 text-sm text-muted-foreground">{body}</p>
+
+      <div className="mt-4 h-px w-full bg-border/70" />
+      <div className="mt-3 grid grid-cols-2 gap-3 text-xs">
+        <div>
+          <p className="font-mono uppercase tracking-wider text-muted-foreground">Inputs</p>
+          <p className="mt-1 text-muted-foreground">{io.inputs}</p>
+        </div>
+        <div>
+          <p className="font-mono uppercase tracking-wider text-muted-foreground">Outputs</p>
+          <p className="mt-1 text-muted-foreground">{io.outputs}</p>
+        </div>
+      </div>
     </motion.div>
   );
+}
+
+function glyph(title: string) {
+  const t = title.toLowerCase();
+  if (t.includes("verify")) return "V";
+  if (t.includes("decide")) return "D";
+  if (t.includes("support")) return "S";
+  if (t.includes("guide")) return "G";
+  return "C";
+}
+
+function agentIO(title: string) {
+  const t = title.toLowerCase();
+  if (t.includes("verify")) return { inputs: "Documents", outputs: "Flags, proof" };
+  if (t.includes("decide")) return { inputs: "Rules, evidence", outputs: "Outcome, rationale" };
+  if (t.includes("support")) return { inputs: "Questions, status", outputs: "Replies, escalations" };
+  if (t.includes("guide")) return { inputs: "Programs, constraints", outputs: "Next steps" };
+  return { inputs: "Queues, policies", outputs: "Overrides, metrics" };
 }
 

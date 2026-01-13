@@ -4,11 +4,6 @@ export default function BigFooter() {
   return (
     <footer className="border-t border-border bg-background">
       <div className="container-grid py-12">
-        <div aria-hidden="true" className="relative overflow-hidden">
-          <div className="pointer-events-none select-none absolute -top-10 right-0 text-[96px] md:text-[140px] font-display font-bold tracking-tight text-foreground/[0.04]">
-            Passage
-          </div>
-        </div>
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
           <div>
             <p className="font-display text-lg font-bold text-foreground">Passage</p>

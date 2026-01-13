@@ -1,96 +1,171 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } from "framer-motion";
+import { useMemo, useState } from "react";
 import { ACCENT, COPY } from "@/components/landing/copy";
-
-function Block({ title, items }: { title: string; items: string }) {
-  return (
-    <div className="group rounded-2xl border border-border bg-card/30 backdrop-blur-sm p-5 hover:bg-card/40 transition-colors">
-      <div className="flex items-center justify-between">
-        <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground">{title}</p>
-        <span className={["h-2 w-2 rounded-full", ACCENT.bgSoft].join(" ")} />
-      </div>
-      <p className="mt-3 text-sm text-foreground/90">{items}</p>
-      <div className="mt-4 h-px w-full bg-border/70" />
-      <p className="mt-3 text-xs text-muted-foreground">Tap to inspect</p>
-    </div>
-  );
-}
 
 export default function HeroDiagram() {
   const reduce = useReducedMotion();
   const { diagram } = COPY.hero;
+  const [active, setActive] = useState<"inputs" | "passage" | "outputs" | null>(null);
+
+  const bullets = useMemo(() => {
+    const split = (s: string) => s.split(",").map((x) => x.trim()).filter(Boolean).slice(0, 3);
+    return {
+      inputs: split(diagram.inputs.items),
+      passage: split(diagram.passage.items),
+      outputs: split(diagram.outputs.items),
+    };
+  }, [diagram.inputs.items, diagram.outputs.items, diagram.passage.items]);
+
+  // Subtle parallax on panel
+  const mx = useMotionValue(0);
+  const my = useMotionValue(0);
+  const smx = useSpring(mx, { stiffness: 120, damping: 16, mass: 0.35 });
+  const smy = useSpring(my, { stiffness: 120, damping: 16, mass: 0.35 });
+  const rx = useTransform(smy, [-40, 40], [1.6, -1.6]);
+  const ry = useTransform(smx, [-40, 40], [-1.6, 1.6]);
+
+  const dimA = active === null ? 1 : active === "inputs" ? 1 : 0.2;
+  const dimC = active === null ? 1 : active === "outputs" ? 1 : 0.2;
 
   return (
-    <div className="relative rounded-3xl border border-border bg-card/20 backdrop-blur-sm p-6 md:p-8 overflow-hidden">
-      <div
-        aria-hidden="true"
-        className="absolute -top-28 -right-28 h-[340px] w-[340px] rounded-full blur-3xl opacity-40"
-        style={{ background: "radial-gradient(circle, rgba(139,92,246,0.22), transparent 60%)" }}
-      />
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 relative">
-        <motion.div
-          initial={reduce ? undefined : { opacity: 0, y: 8 }}
-          animate={reduce ? undefined : { opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: "easeOut", delay: 0.08 }}
-        >
-          <Block title={diagram.inputs.title} items={diagram.inputs.items} />
-        </motion.div>
-
-        <motion.div
-          initial={reduce ? undefined : { opacity: 0, y: 8 }}
-          animate={reduce ? undefined : { opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: "easeOut", delay: 0.16 }}
-        >
-          <div className={["rounded-2xl border bg-card/30 backdrop-blur-sm p-5 transition-all", ACCENT.border].join(" ")}>
-            <div className="flex items-center justify-between">
-              <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground">{diagram.passage.title}</p>
-              <span className={["h-2 w-2 rounded-full", ACCENT.bgSoft].join(" ")} />
-            </div>
-            <p className="mt-3 text-sm text-foreground/90">{diagram.passage.items}</p>
-            <div className="mt-4 h-px w-full bg-border/70" />
-            <p className="mt-3 text-xs text-muted-foreground">Governed workflow</p>
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={reduce ? undefined : { opacity: 0, y: 8 }}
-          animate={reduce ? undefined : { opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: "easeOut", delay: 0.24 }}
-        >
-          <Block title={diagram.outputs.title} items={diagram.outputs.items} />
-        </motion.div>
+    <motion.div
+      className="relative border border-border bg-card/20 backdrop-blur-sm p-5 md:p-6 overflow-hidden"
+      onPointerMove={(e) => {
+        if (reduce) return;
+        const rect = (e.currentTarget as HTMLDivElement).getBoundingClientRect();
+        const dx = e.clientX - (rect.left + rect.width / 2);
+        const dy = e.clientY - (rect.top + rect.height / 2);
+        mx.set(Math.max(-40, Math.min(40, dx / 10)));
+        my.set(Math.max(-40, Math.min(40, dy / 10)));
+      }}
+      onPointerLeave={() => {
+        mx.set(0);
+        my.set(0);
+        setActive(null);
+      }}
+      style={reduce ? undefined : { rotateX: rx, rotateY: ry, transformStyle: "preserve-3d" }}
+    >
+      <div className="flex items-center justify-between">
+        <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground">System panel</p>
+        <span className={["h-2 w-2 rounded-full", ACCENT.bgSoft].join(" ")} />
       </div>
 
-      <div className="hidden md:block mt-6 relative">
-        <svg width="100%" height="70" viewBox="0 0 900 70" aria-hidden="true">
-          <motion.path
-            d="M140 35 C 250 35, 290 35, 400 35"
-            fill="none"
-            stroke={ACCENT.stroke}
-            strokeOpacity="0.9"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            initial={reduce ? undefined : { pathLength: 0, opacity: 0 }}
-            animate={reduce ? undefined : { pathLength: 1, opacity: 1 }}
-            transition={{ duration: 0.9, ease: "easeOut", delay: 0.15 }}
+      <div className="mt-4 relative">
+        {/* Connecting lines */}
+        <div aria-hidden="true" className="absolute inset-0 pointer-events-none">
+          <svg width="100%" height="100%" viewBox="0 0 900 220" preserveAspectRatio="none">
+            <motion.path
+              d="M205 110 C 285 110, 315 110, 395 110"
+              fill="none"
+              stroke={ACCENT.stroke}
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              opacity={dimA}
+              initial={reduce ? undefined : { pathLength: 0, opacity: 0 }}
+              animate={reduce ? undefined : { pathLength: 1, opacity: dimA }}
+              transition={{ duration: 0.9, ease: "easeOut", delay: 0.2 }}
+            />
+            <motion.path
+              d="M505 110 C 585 110, 615 110, 695 110"
+              fill="none"
+              stroke={ACCENT.stroke}
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              opacity={dimC}
+              initial={reduce ? undefined : { pathLength: 0, opacity: 0 }}
+              animate={reduce ? undefined : { pathLength: 1, opacity: dimC }}
+              transition={{ duration: 0.9, ease: "easeOut", delay: 0.32 }}
+            />
+          </svg>
+        </div>
+
+        <div className="relative grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-4">
+          <SystemColumn
+            label={diagram.inputs.title}
+            value={diagram.inputs.items}
+            bullets={bullets.inputs}
+            active={active === "inputs"}
+            dim={active !== null && active !== "inputs"}
+            onEnter={() => setActive("inputs")}
           />
-          <motion.path
-            d="M500 35 C 610 35, 650 35, 760 35"
-            fill="none"
-            stroke={ACCENT.stroke}
-            strokeOpacity="0.9"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            initial={reduce ? undefined : { pathLength: 0, opacity: 0 }}
-            animate={reduce ? undefined : { pathLength: 1, opacity: 1 }}
-            transition={{ duration: 0.9, ease: "easeOut", delay: 0.25 }}
+          <SystemColumn
+            label={diagram.passage.title}
+            value={diagram.passage.items}
+            bullets={bullets.passage}
+            active={active === "passage"}
+            dim={active !== null && active !== "passage"}
+            onEnter={() => setActive("passage")}
+            accent
           />
-          <circle cx="450" cy="35" r="3" fill="rgba(255,255,255,0.55)" />
-        </svg>
+          <SystemColumn
+            label={diagram.outputs.title}
+            value={diagram.outputs.items}
+            bullets={bullets.outputs}
+            active={active === "outputs"}
+            dim={active !== null && active !== "outputs"}
+            onEnter={() => setActive("outputs")}
+          />
+        </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
+function SystemColumn({
+  label,
+  value,
+  bullets,
+  active,
+  dim,
+  onEnter,
+  accent,
+}: {
+  label: string;
+  value: string;
+  bullets: string[];
+  active: boolean;
+  dim: boolean;
+  onEnter: () => void;
+  accent?: boolean;
+}) {
+  return (
+    <motion.div
+      className={[
+        "md:col-span-4 border border-border bg-background/30 p-4",
+        dim ? "opacity-40" : "opacity-100",
+        accent ? "ring-1 ring-violet-400/20" : "",
+        "transition-opacity",
+      ].join(" ")}
+      onMouseEnter={onEnter}
+      layout
+      transition={{ type: "spring", stiffness: 420, damping: 40 }}
+      style={{ transformOrigin: "center" }}
+      animate={active ? { scale: 1.02 } : { scale: 1 }}
+    >
+      <div className="flex items-center justify-between gap-4">
+        <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground">{label}</p>
+        <span className={["h-1.5 w-6", accent ? "bg-violet-400/70" : "bg-border"].join(" ")} />
+      </div>
+      <p className="mt-3 text-sm text-foreground/90">{value}</p>
+      <motion.div
+        className="mt-4 space-y-2"
+        initial={false}
+        animate={active ? { height: "auto", opacity: 1 } : { height: 0, opacity: 0 }}
+        style={{ overflow: "hidden" }}
+        transition={{ duration: 0.18, ease: "easeOut" }}
+      >
+        <div className="h-px w-full bg-border/70" />
+        <ul className="pt-3 space-y-2">
+          {bullets.map((b) => (
+            <li key={b} className="text-xs text-muted-foreground flex items-center gap-2">
+              <span className="h-1 w-1 rounded-full bg-violet-400/70" />
+              <span>{b}</span>
+            </li>
+          ))}
+        </ul>
+      </motion.div>
+    </motion.div>
+  );
+}

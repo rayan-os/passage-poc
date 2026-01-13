@@ -15,8 +15,8 @@ function MagneticChip({ label }: { label: string }) {
     <motion.button
       type="button"
       className={[
-        "relative inline-flex items-center justify-center rounded-full border px-3 py-1 text-xs font-medium",
-        "border-border bg-background/20 text-muted-foreground hover:text-foreground",
+        "relative inline-flex items-center justify-center border px-2.5 py-1 text-[11px] font-medium font-mono",
+        "border-border bg-background/10 text-muted-foreground hover:text-foreground",
         "focus:outline-none focus:ring-2 focus:ring-ring/60",
       ].join(" ")}
       style={reduce ? undefined : { x: sx, y: sy }}
@@ -54,7 +54,7 @@ export default function IntegrationsGrid() {
       {categories.map((cat, idx) => (
         <motion.div
           key={cat.title}
-          className="rounded-2xl border border-border bg-card/20 backdrop-blur-sm p-6"
+          className="border border-border bg-card/10 backdrop-blur-sm p-5"
           initial={reduce ? undefined : { opacity: 0, y: 10 }}
           whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.25 }}
@@ -66,7 +66,7 @@ export default function IntegrationsGrid() {
           </div>
           <div className="mt-4 h-px w-full bg-border/70" />
           <motion.div
-            className="mt-5 flex flex-wrap gap-2"
+            className="mt-5 grid grid-cols-2 sm:grid-cols-3 gap-2"
             animate={float}
             transition={reduce ? undefined : { duration: 6 + idx, ease: "easeInOut", repeat: Infinity }}
           >

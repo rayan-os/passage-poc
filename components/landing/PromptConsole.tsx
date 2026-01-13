@@ -110,6 +110,12 @@ export default function PromptConsole() {
   const [busy, setBusy] = useState(false);
   const [activeChip, setActiveChip] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const inputWrapRef = useRef<HTMLDivElement | null>(null);
+  const [flying, setFlying] = useState<{
+    text: string;
+    from: { x: number; y: number; w: number; h: number };
+    to: { x: number; y: number };
+  } | null>(null);
 
   const prompts = COPY.console.prompts;
 
@@ -157,11 +163,33 @@ export default function PromptConsole() {
   }, [prompts]);
 
   return (
-    <div className="dark rounded-3xl border border-border bg-background text-foreground">
-      <div className="rounded-3xl border border-border bg-card/20 backdrop-blur-sm overflow-hidden">
+    <div className="relative">
+      {flying && (
+        <motion.div
+          aria-hidden="true"
+          className="fixed z-[60] pointer-events-none"
+          initial={{ left: flying.from.x, top: flying.from.y, width: flying.from.w, height: flying.from.h, opacity: 1, scale: 1 }}
+          animate={{
+            left: flying.to.x,
+            top: flying.to.y,
+            width: 220,
+            height: 34,
+            opacity: 0.2,
+            scale: 0.9,
+          }}
+          transition={{ duration: 0.42, ease: "easeOut" }}
+          onAnimationComplete={() => setFlying(null)}
+        >
+          <div className="h-full w-full border border-border bg-background/80 backdrop-blur px-3 py-2 text-xs font-mono text-muted-foreground overflow-hidden">
+            {flying.text}
+          </div>
+        </motion.div>
+      )}
+
+      <div className="border border-border bg-card/20 backdrop-blur-sm overflow-hidden">
         <div className="grid grid-cols-1 md:grid-cols-12">
-          <div className="md:col-span-5 border-b md:border-b-0 md:border-r border-border p-6 md:p-8">
-            <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground">Console</p>
+          <div className="md:col-span-5 border-b md:border-b-0 md:border-r border-border p-6 md:p-7">
+            <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground">Command</p>
             <h3 className="mt-3 font-display text-2xl font-bold tracking-tight">{COPY.console.header}</h3>
             <p className="mt-3 text-sm text-muted-foreground">{COPY.console.subhead}</p>
 
@@ -169,20 +197,30 @@ export default function PromptConsole() {
               <label className="sr-only" htmlFor="console-input">
                 Question
               </label>
-              <div className="flex items-center gap-2 rounded-xl border border-border bg-background/20 px-3 py-2 focus-within:ring-2 focus-within:ring-ring/60">
-                <span className={["h-2 w-2 rounded-full", ACCENT.bgSoft].join(" ")} />
+              <div
+                ref={inputWrapRef}
+                className="flex items-center gap-2 border border-border bg-background/10 px-3 py-2 focus-within:ring-2 focus-within:ring-ring/50"
+              >
+                <span className={["h-2 w-2", ACCENT.bgSoft].join(" ")} />
                 <input
                   id="console-input"
                   ref={inputRef}
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Type a question"
-                  className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
+                  className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none font-mono caret-transparent"
+                />
+                <span
+                  aria-hidden="true"
+                  className={[
+                    "h-4 w-[2px] bg-foreground/80",
+                    "motion-safe:animate-[blink_1s_steps(1,end)_infinite]",
+                  ].join(" ")}
                 />
                 <button
                   type="submit"
                   disabled={busy}
-                  className="inline-flex items-center justify-center rounded-md border border-border bg-secondary/20 px-3 py-1.5 text-xs font-medium text-foreground hover:bg-secondary/35 transition-colors disabled:opacity-60"
+                  className="inline-flex items-center justify-center border border-border bg-secondary/20 px-3 py-1.5 text-xs font-medium text-foreground hover:bg-secondary/35 transition-colors disabled:opacity-60 font-mono"
                 >
                   Run
                 </button>
@@ -190,12 +228,12 @@ export default function PromptConsole() {
             </form>
           </div>
 
-          <div className="md:col-span-7 p-6 md:p-8">
+          <div className="md:col-span-7 p-6 md:p-7">
             <div className="flex items-center justify-between gap-4">
               <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground">Output</p>
               <span className={["h-2 w-2 rounded-full", ACCENT.bgSoft].join(" ")} />
             </div>
-            <div className="mt-6 rounded-2xl border border-border bg-background/20 p-5 min-h-[180px]">
+            <div className="mt-6 border border-border bg-background/10 p-5 min-h-[180px]">
               <motion.div
                 key={outputKind}
                 initial={reduce ? undefined : { opacity: 0, y: 6 }}
@@ -214,19 +252,27 @@ export default function PromptConsole() {
         </div>
       </div>
 
-      <div className="mt-10 rounded-2xl border border-border bg-card/10 backdrop-blur-sm p-6 overflow-hidden">
-        <div className="flex items-center justify-between gap-4">
-          <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground">Prompt cloud</p>
-          <span className={["h-2 w-2 rounded-full", ACCENT.bgSoft].join(" ")} />
-        </div>
-
-        <div className="mt-6 space-y-4">
+      <div className="mt-8 -mx-2 md:-mx-4">
+        <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground">Prompt cloud</p>
+        <div className="mt-4 space-y-3">
           {lanes.map((lane, laneIdx) => (
             <PromptLane
               key={laneIdx}
               lane={lane}
               laneIdx={laneIdx}
-              onPick={(p) => void runPrompt(p, true)}
+              onPick={(p, rect) => {
+                const target = inputWrapRef.current?.getBoundingClientRect();
+                if (rect && target && !reduce) {
+                  setFlying({
+                    text: p,
+                    from: { x: rect.left, y: rect.top, w: rect.width, h: rect.height },
+                    to: { x: target.left + 12, y: target.top + 6 },
+                  });
+                  window.setTimeout(() => void runPrompt(p, true), 260);
+                } else {
+                  void runPrompt(p, true);
+                }
+              }}
               busy={busy}
             />
           ))}
@@ -244,7 +290,7 @@ function PromptLane({
 }: {
   lane: string[];
   laneIdx: number;
-  onPick: (p: string) => void;
+  onPick: (p: string, rect: DOMRect | null) => void;
   busy: boolean;
 }) {
   const reduce = useReducedMotion();
@@ -267,11 +313,11 @@ function PromptLane({
           <button
             key={`${p}-${idx}`}
             type="button"
-            onClick={() => onPick(p)}
+            onClick={(e) => onPick(p, (e.currentTarget as HTMLButtonElement).getBoundingClientRect())}
             disabled={busy}
             className={[
-              "whitespace-nowrap rounded-full border px-3 py-2 text-xs font-medium",
-              "border-border bg-background/20 text-muted-foreground hover:text-foreground hover:bg-background/30",
+              "whitespace-nowrap border px-3 py-2 text-xs font-medium font-mono",
+              "border-border bg-background/10 text-muted-foreground hover:text-foreground hover:bg-background/20",
               "focus:outline-none focus:ring-2 focus:ring-ring/60",
               "disabled:opacity-60 disabled:cursor-not-allowed",
             ].join(" ")}
