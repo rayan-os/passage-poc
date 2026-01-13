@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { COPY } from "@/components/landing/copy";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export default function Navigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -26,6 +27,9 @@ export default function Navigation() {
             ))}
           </div>
           <div className="flex items-center gap-4">
+            <div className="hidden md:block">
+              <ThemeToggle />
+            </div>
             <Link
               href={COPY.nav.cta.href}
               className="hidden md:inline-flex px-4 py-2 text-sm font-medium border border-border bg-secondary/20 hover:bg-secondary/35 text-foreground transition-colors"
@@ -66,6 +70,9 @@ export default function Navigation() {
               >
                 {COPY.nav.cta.label}
               </Link>
+              <div className="pt-2">
+                <ThemeToggle />
+              </div>
             </div>
           </div>
         )}
