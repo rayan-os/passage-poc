@@ -2,11 +2,10 @@ import dynamic from "next/dynamic";
 import Hero from "@/components/landing/Hero";
 import { Section } from "@/components/landing/Layout";
 import { COPY } from "@/components/landing/copy";
-import PlatformSoftwareRows from "@/components/landing/PlatformSoftwareRows";
+import PlatformUIShowcase from "@/components/landing/PlatformUIShowcase";
 import OutcomeStrip from "@/components/landing/OutcomeStrip";
 import ProofSection from "@/components/landing/ProofSection";
 import IntegrationsGrid from "@/components/landing/IntegrationsGrid";
-import FounderCard from "@/components/landing/FounderCard";
 import FinalCTABand from "@/components/landing/FinalCTABand";
 import VoiceAgents from "@/components/landing/VoiceAgents";
 import DataFlowDots from "@/components/landing/DataFlowDots";
@@ -26,7 +25,7 @@ export default function Home() {
       <Hero />
 
       <Section id="platform" eyebrow="Platform" title={COPY.platformClaim.header} subtitle={COPY.platformClaim.body}>
-        <PlatformSoftwareRows />
+        <PlatformUIShowcase />
       </Section>
 
       <Section id="outcomes" eyebrow="Outcomes" title={COPY.outcomeStrip.header} subtitle={COPY.outcomeStrip.body}>
@@ -50,11 +49,8 @@ export default function Home() {
         <PromptConsole />
       </Section>
 
-      <Section id="team" eyebrow="Team" title={COPY.team.header} subtitle={COPY.team.body}>
-        <div className="space-y-6">
-          <FounderCard />
-          <FinalCTABand />
-        </div>
+      <Section id="demo" eyebrow="Demo" title={COPY.team.finalCta.header} subtitle="See the platform end to end.">
+        <FinalCTABand />
       </Section>
     </>
   );
