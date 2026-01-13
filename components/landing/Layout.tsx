@@ -16,12 +16,11 @@ export function Section({
 }>) {
   return (
     <section id={id} className="border-t border-border">
-      <div className="container-grid py-14 md:py-18 lg:py-20">
+      <div className="container-grid py-18 md:py-24 lg:py-28">
         <div className="grid-12">
           <div className="col-span-12 lg:col-span-4">
             {eyebrow && (
               <div className="inline-flex items-center gap-2 mb-3">
-                <span className="h-1.5 w-1.5 rounded-full bg-violet-400/80" />
                 <p className="text-xs uppercase tracking-wider font-mono text-muted-foreground">{eyebrow}</p>
               </div>
             )}

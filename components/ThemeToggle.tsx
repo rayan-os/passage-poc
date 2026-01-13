@@ -8,11 +8,11 @@ function getInitialTheme(): Theme {
   if (typeof window === "undefined") return "dark";
   const saved = window.localStorage.getItem("passage_theme");
   if (saved === "light" || saved === "dark") return saved;
-  return "dark";
+  return "light";
 }
 
 export default function ThemeToggle() {
-  const [theme, setTheme] = useState<Theme>("dark");
+  const [theme, setTheme] = useState<Theme>("light");
 
   useEffect(() => {
     const t = getInitialTheme();
