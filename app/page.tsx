@@ -1,24 +1,57 @@
-import HeroEnterprise from "@/components/enterprise/HeroEnterprise";
-import BuyerSelector from "@/components/enterprise/BuyerSelector";
-import HowItWorksPipeline from "@/components/enterprise/HowItWorksPipeline";
-import AgentsModules from "@/components/enterprise/AgentsModules";
-import PlatformPrimitives from "@/components/enterprise/PlatformPrimitives";
-import ProofTrust from "@/components/enterprise/ProofTrust";
-import FinalCTA from "@/components/enterprise/FinalCTA";
-import { AgentHighlightProvider } from "@/components/enterprise/AgentHighlightContext";
+import dynamic from "next/dynamic";
+import Hero from "@/components/landing/Hero";
+import { Section } from "@/components/landing/Layout";
+import { COPY } from "@/components/landing/copy";
+import PipelineStrip from "@/components/landing/PipelineStrip";
+import OutcomeStrip from "@/components/landing/OutcomeStrip";
+import AgentCards from "@/components/landing/AgentCards";
+import ProofSection from "@/components/landing/ProofSection";
+import IntegrationsGrid from "@/components/landing/IntegrationsGrid";
+import FounderCard from "@/components/landing/FounderCard";
+import FinalCTABand from "@/components/landing/FinalCTABand";
+
+const PromptConsole = dynamic(() => import("@/components/landing/PromptConsole"), {
+  ssr: false,
+  loading: () => (
+    <div className="rounded-3xl border border-border bg-card/20 backdrop-blur-sm p-6 md:p-8 text-sm text-muted-foreground">
+      Loading console…
+    </div>
+  ),
+});
 
 export default function Home() {
   return (
     <>
-      <HeroEnterprise />
-      <BuyerSelector />
-      <AgentHighlightProvider>
-        <HowItWorksPipeline />
-        <AgentsModules />
-      </AgentHighlightProvider>
-      <PlatformPrimitives />
-      <ProofTrust />
-      <FinalCTA />
+      <Hero />
+
+      <Section id="platform" eyebrow="Platform" title={COPY.platformClaim.header} subtitle={COPY.platformClaim.body}>
+        <PipelineStrip />
+      </Section>
+
+      <Section id="outcomes" eyebrow="Outcomes" title={COPY.outcomeStrip.header} subtitle={COPY.outcomeStrip.body}>
+        <OutcomeStrip />
+      </Section>
+
+      <Section id="agents" eyebrow="Agents" title={COPY.agents.header} subtitle={COPY.agents.body}>
+        <AgentCards />
+      </Section>
+
+      <ProofSection />
+
+      <Section id="integrations" eyebrow="Integrations" title={COPY.integrations.header} subtitle={COPY.integrations.body}>
+        <IntegrationsGrid />
+      </Section>
+
+      <Section id="console" eyebrow="Console" title={COPY.console.header} subtitle={COPY.console.subhead}>
+        <PromptConsole />
+      </Section>
+
+      <Section id="team" eyebrow="Team" title={COPY.team.header} subtitle={COPY.team.body}>
+        <div className="space-y-6">
+          <FounderCard />
+          <FinalCTABand />
+        </div>
+      </Section>
     </>
   );
 }

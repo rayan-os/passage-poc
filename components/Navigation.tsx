@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { COPY } from "@/components/landing/copy";
 
 export default function Navigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -14,22 +15,22 @@ export default function Navigation() {
             Passage
           </Link>
           <div className="hidden md:flex items-center gap-8">
-            <Link href="/platform" className="text-sm hover:text-foreground text-muted-foreground transition-colors">
-              Platform
-            </Link>
-            <Link href="/solutions/government" className="text-sm hover:text-foreground text-muted-foreground transition-colors">
-              Solutions
-            </Link>
-            <Link href="/trust" className="text-sm hover:text-foreground text-muted-foreground transition-colors">
-              Trust
-            </Link>
+            {COPY.nav.links.map((l) => (
+              <Link
+                key={l.href}
+                href={l.href}
+                className="text-sm hover:text-foreground text-muted-foreground transition-colors"
+              >
+                {l.label}
+              </Link>
+            ))}
           </div>
           <div className="flex items-center gap-4">
             <Link
-              href="/contact"
+              href={COPY.nav.cta.href}
               className="hidden md:inline-flex px-4 py-2 text-sm font-medium rounded-md border border-border bg-secondary/40 hover:bg-secondary/60 text-foreground transition-colors"
             >
-              Request demo
+              {COPY.nav.cta.label}
             </Link>
             <button
               className="md:hidden p-2 rounded-md hover:bg-accent text-foreground transition-colors"
@@ -49,23 +50,21 @@ export default function Navigation() {
         {mobileMenuOpen && (
           <div className="md:hidden border-t border-border py-4">
             <div className="flex flex-col gap-4">
-              <Link href="/platform" className="text-sm hover:text-foreground text-muted-foreground transition-colors">
-                Platform
-              </Link>
-              <Link href="/solutions/government" className="text-sm hover:text-foreground text-muted-foreground transition-colors">
-                Solutions
-              </Link>
-              <Link href="/trust" className="text-sm hover:text-foreground text-muted-foreground transition-colors">
-                Trust
-              </Link>
-              <Link href="/contact" className="text-sm hover:text-foreground text-muted-foreground transition-colors">
-                Contact
-              </Link>
+              {COPY.nav.links.map((l) => (
+                <Link
+                  key={l.href}
+                  href={l.href}
+                  className="text-sm hover:text-foreground text-muted-foreground transition-colors"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {l.label}
+                </Link>
+              ))}
               <Link
-                href="/contact"
+                href={COPY.nav.cta.href}
                 className="inline-flex px-4 py-2 text-sm font-medium rounded-md border border-border bg-secondary/40 hover:bg-secondary/60 text-foreground transition-colors w-fit mt-2"
               >
-                Request demo
+                {COPY.nav.cta.label}
               </Link>
             </div>
           </div>
