@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Fraunces, Inter, Space_Mono } from "next/font/google";
+import { Inter, Space_Mono } from "next/font/google";
 import "./globals.css";
 import Navigation from "@/components/Navigation";
 import BigFooter from "@/components/BigFooter";
@@ -17,10 +17,11 @@ const spaceMono = Space_Mono({
   display: "swap",
 });
 
-// Display font: restrained serif, operator vibe.
-const display = Fraunces({
+// Display font: clean sans, modern product feel.
+const display = Inter({
   variable: "--font-display",
   subsets: ["latin"],
+  weight: ["600", "700", "800"],
   display: "swap",
 });
 
@@ -35,7 +36,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <body
         className={`${inter.variable} ${spaceMono.variable} ${display.variable} font-sans min-h-screen`}
       >

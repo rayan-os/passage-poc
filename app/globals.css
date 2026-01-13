@@ -8,26 +8,27 @@
   }
 
   :root {
-    /* Graphite dark with lighter surfaces (no true black). */
-    --background: 0 0% 7%;
-    --foreground: 0 0% 96%;
-    --muted: 0 0% 14%;
-    --muted-foreground: 0 0% 68%;
-    --border: 0 0% 18%;
-    --accent: 0 0% 16%;
-    --primary: 0 0% 96%;
-    --primary-foreground: 0 0% 8%;
-    --secondary: 0 0% 12%;
-    --secondary-foreground: 0 0% 96%;
-    --input: 0 0% 14%;
-    --ring: 0 0% 96%;
+    /* Clean light base with subtle contrast (Chatbase-like). */
+    --background: 0 0% 99%;
+    --foreground: 0 0% 7%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 40%;
+    --border: 0 0% 90%;
+    --accent: 0 0% 95%;
+    --primary: 0 0% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 10%;
+    --input: 0 0% 96%;
+    --ring: 0 0% 10%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --card: 0 0% 4%;
-    --card-foreground: 0 0% 93%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 10%;
   }
 
   .dark {
+    /* Dark section variant (Basedash-like console). */
     --background: 0 0% 7%;
     --foreground: 0 0% 96%;
     --muted: 0 0% 14%;

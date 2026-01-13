@@ -157,7 +157,7 @@ export default function PromptConsole() {
   }, [prompts]);
 
   return (
-    <div>
+    <div className="dark rounded-3xl border border-border bg-background text-foreground">
       <div className="rounded-3xl border border-border bg-card/20 backdrop-blur-sm overflow-hidden">
         <div className="grid grid-cols-1 md:grid-cols-12">
           <div className="md:col-span-5 border-b md:border-b-0 md:border-r border-border p-6 md:p-8">
