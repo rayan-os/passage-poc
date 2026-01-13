@@ -132,7 +132,7 @@ export default function TrustPage() {
                   Compliance information
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  Learn about Passage's compliance posture and how it aligns with regulatory requirements in your industry.
+                  Learn about Passage&apos;s compliance posture and how it aligns with regulatory requirements in your industry.
                 </p>
               </Link>
             </div>
