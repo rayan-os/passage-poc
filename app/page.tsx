@@ -2,7 +2,7 @@ import dynamic from "next/dynamic";
 import Hero from "@/components/landing/Hero";
 import { Section } from "@/components/landing/Layout";
 import { COPY } from "@/components/landing/copy";
-import PipelineStrip from "@/components/landing/PipelineStrip";
+import PlatformSoftwareRows from "@/components/landing/PlatformSoftwareRows";
 import OutcomeStrip from "@/components/landing/OutcomeStrip";
 import ProofSection from "@/components/landing/ProofSection";
 import IntegrationsGrid from "@/components/landing/IntegrationsGrid";
@@ -26,7 +26,7 @@ export default function Home() {
       <Hero />
 
       <Section id="platform" eyebrow="Platform" title={COPY.platformClaim.header} subtitle={COPY.platformClaim.body}>
-        <PipelineStrip />
+        <PlatformSoftwareRows />
       </Section>
 
       <Section id="outcomes" eyebrow="Outcomes" title={COPY.outcomeStrip.header} subtitle={COPY.outcomeStrip.body}>
