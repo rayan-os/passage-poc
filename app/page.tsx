@@ -1,17 +1,21 @@
-import HeroMedia from "@/components/HeroMedia";
-import EditorialStatement from "@/components/EditorialStatement";
-import OfferingsChapters from "@/components/OfferingsChapters";
-import StoriesCarousel from "@/components/StoriesCarousel";
-import SplitCTA from "@/components/SplitCTA";
+import HeroEnterprise from "@/components/enterprise/HeroEnterprise";
+import BuyerSelector from "@/components/enterprise/BuyerSelector";
+import HowItWorksPipeline from "@/components/enterprise/HowItWorksPipeline";
+import AgentsModules from "@/components/enterprise/AgentsModules";
+import PlatformPrimitives from "@/components/enterprise/PlatformPrimitives";
+import ProofTrust from "@/components/enterprise/ProofTrust";
+import FinalCTA from "@/components/enterprise/FinalCTA";
 
 export default function Home() {
   return (
     <>
-      <HeroMedia />
-      <EditorialStatement />
-      <OfferingsChapters />
-      <StoriesCarousel />
-      <SplitCTA />
+      <HeroEnterprise />
+      <BuyerSelector />
+      <HowItWorksPipeline />
+      <AgentsModules />
+      <PlatformPrimitives />
+      <ProofTrust />
+      <FinalCTA />
     </>
   );
 }
