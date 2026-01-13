@@ -14,6 +14,7 @@ export default function Hero() {
       <div aria-hidden="true" className="absolute inset-0">
         {/* Very subtle noise, no soft gradients */}
         <Noise />
+        <div className="dot-cloud" />
       </div>
 
       <div className="container-grid relative py-20 md:py-24 lg:py-28">
