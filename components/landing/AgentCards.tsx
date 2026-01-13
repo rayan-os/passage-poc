@@ -15,7 +15,7 @@ function useParallax() {
 }
 
 export default function AgentCards() {
-  const reduce = useReducedMotion();
+  const reduce = useReducedMotion() ?? false;
   const cards = COPY.agents.cards;
   const ref = useRef<HTMLDivElement | null>(null);
 
