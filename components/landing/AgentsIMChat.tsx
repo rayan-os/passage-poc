@@ -67,6 +67,8 @@ const AGENTS: Agent[] = [
   },
 ];
 
+const ORDER: AgentKey[] = ["jackie", "david", "ella", "mark"];
+
 const RESPONSES: Record<AgentKey, (prompt: string) => string> = {
   jackie: (p) => {
     if (p.toLowerCase().includes("missing")) return "Blocking: transcript.pdf not received; residency.pdf is unreadable. Request sent with secure upload link.";
@@ -96,13 +98,43 @@ export default function AgentsIMChat() {
   const [msgs, setMsgs] = useState<Msg[]>(() => seedMessages("jackie"));
   const [typing, setTyping] = useState(false);
   const scrollRef = useRef<HTMLDivElement | null>(null);
+  const [intro, setIntro] = useState(true);
 
   const agent = useMemo(() => AGENTS.find((a) => a.key === active)!, [active]);
+  const accent = useMemo(() => accentFor(active), [active]);
 
   useEffect(() => {
     setMsgs(seedMessages(active));
     setTyping(false);
   }, [active]);
+
+  // “Walk” left→right once on load (Palantir-ish demo motion, Airbnb-ish color).
+  useEffect(() => {
+    if (reduce) return;
+    const timers: number[] = [];
+    timers.push(
+      window.setTimeout(() => {
+        setActive("jackie");
+      }, 250)
+    );
+    timers.push(
+      window.setTimeout(() => {
+        setActive("david");
+      }, 800)
+    );
+    timers.push(
+      window.setTimeout(() => {
+        setActive("ella");
+      }, 1350)
+    );
+    timers.push(
+      window.setTimeout(() => {
+        setActive("mark");
+        setIntro(false);
+      }, 1900)
+    );
+    return () => timers.forEach((t) => window.clearTimeout(t));
+  }, [reduce]);
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -127,44 +159,141 @@ export default function AgentsIMChat() {
     <div className="panel panel-sharp panel-topline p-8 md:p-10">
       <div className="flex items-center justify-between">
         <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground">Agents</p>
-        <span className="h-2 w-2 rounded-full bg-violet-400/70 motion-safe:[animation:status-pulse_3.1s_ease-in-out_infinite]" aria-hidden="true" />
+        <span
+          className="h-2 w-2 rounded-full motion-safe:[animation:status-pulse_3.1s_ease-in-out_infinite]"
+          style={{ backgroundColor: accent.dot }}
+          aria-hidden="true"
+        />
       </div>
 
-      {/* Agent selector (horizontal) */}
-      <div className="mt-7 grid grid-cols-2 md:grid-cols-4 gap-3">
-        {AGENTS.map((a) => {
-          const isActive = a.key === active;
-          return (
-            <motion.button
-              key={a.key}
-              type="button"
-              onClick={() => setActive(a.key)}
-              className={[
-                "text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
-                "bg-background/10 hover:bg-background/15 transition-colors",
-                "px-4 py-3",
-                isActive ? "panel-topline" : "border-t border-transparent",
-              ].join(" ")}
-              initial={false}
-              animate={reduce ? undefined : { opacity: isActive ? 1 : 0.7 }}
-              transition={{ duration: 0.18, ease: "easeOut" }}
-            >
-              <div className="flex items-center gap-3">
-                <div className="relative h-10 w-10 overflow-hidden rounded-[12px] shrink-0">
-                  <Image src={a.src} alt={`${a.name} portrait`} fill sizes="40px" className="object-cover" />
-                  <div className="absolute inset-0 ring-1 ring-black/10 dark:ring-white/10" aria-hidden="true" />
-                </div>
-                <div className="min-w-0">
-                  <div className="flex items-center gap-2">
-                    <p className="text-sm font-semibold tracking-tight text-foreground/95">{a.name}</p>
-                    {isActive && <span className="h-1.5 w-1.5 rounded-full bg-violet-400/80" aria-hidden="true" />}
+      {/* Horizontal pipeline (small) with animated links */}
+      <div className="mt-7">
+        <div className="relative bg-background/10 rounded-[14px] px-4 py-4 overflow-hidden">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 opacity-70"
+            style={{
+              background:
+                "radial-gradient(700px 220px at 20% 0%, rgba(236,72,153,0.10), transparent 60%), radial-gradient(700px 220px at 55% 0%, rgba(34,197,94,0.08), transparent 60%), radial-gradient(700px 220px at 90% 0%, rgba(34,211,238,0.10), transparent 60%)",
+            }}
+          />
+
+          <svg className="absolute inset-0 h-full w-full" viewBox="0 0 100 28" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <filter id="aGlow" x="-40%" y="-40%" width="180%" height="180%">
+                <feGaussianBlur stdDeviation="0.7" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+
+            {/* Base track */}
+            {segmentPaths().map((d, i) => (
+              <path
+                key={`base-${i}`}
+                d={d}
+                fill="none"
+                stroke="rgba(255,255,255,0.10)"
+                strokeWidth="0.8"
+                opacity="0.35"
+              />
+            ))}
+
+            {/* Colored segments (one per agent step) */}
+            {ORDER.slice(0, -1).map((k, i) => {
+              const a = accentFor(k);
+              const isHot = ORDER.indexOf(active) >= i + 1 || (intro && ORDER.indexOf(active) === i + 1);
+              return (
+                <motion.path
+                  key={`seg-${k}`}
+                  d={segmentPaths()[i]!}
+                  fill="none"
+                  stroke={a.stroke}
+                  strokeWidth="1.2"
+                  filter="url(#aGlow)"
+                  initial={false}
+                  animate={reduce ? undefined : { opacity: isHot ? 0.9 : 0.2, pathLength: isHot ? 1 : 0.35 }}
+                  transition={{ duration: 0.45, ease: "easeOut" }}
+                />
+              );
+            })}
+
+            {/* Traveling pulse */}
+            {!reduce && (
+              <motion.circle
+                r="1.2"
+                fill={accent.dot}
+                filter="url(#aGlow)"
+                animate={{
+                  cx: [10, 37, 64, 90],
+                  cy: [14, 14, 14, 14],
+                  opacity: [0.0, 1.0, 1.0, 0.0],
+                }}
+                transition={{
+                  duration: 2.2,
+                  ease: "easeInOut",
+                  repeat: Infinity,
+                  repeatDelay: 0.6,
+                }}
+              />
+            )}
+          </svg>
+
+          <div className="relative grid grid-cols-4 gap-3">
+            {ORDER.map((k, idx) => {
+              const a = AGENTS.find((x) => x.key === k)!;
+              const isActive = a.key === active;
+              const ac = accentFor(a.key);
+              return (
+                <motion.button
+                  key={a.key}
+                  type="button"
+                  onClick={() => {
+                    setIntro(false);
+                    setActive(a.key);
+                  }}
+                  className={[
+                    "text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+                    "rounded-[12px] px-3 py-3",
+                    "hover:bg-background/10 transition-colors",
+                  ].join(" ")}
+                  initial={false}
+                  animate={reduce ? undefined : { y: isActive ? -2 : 0, opacity: isActive ? 1 : 0.72 }}
+                  transition={{ type: "spring", stiffness: 420, damping: 34 }}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="relative h-10 w-10 overflow-hidden rounded-[12px] shrink-0">
+                      <Image src={a.src} alt={`${a.name} portrait`} fill sizes="40px" className="object-cover" />
+                      <div
+                        className="absolute inset-0 ring-1"
+                        style={{ borderColor: isActive ? ac.ring : "rgba(255,255,255,0.10)" }}
+                        aria-hidden="true"
+                      />
+                      <span
+                        className="absolute -right-1 -bottom-1 h-3 w-3 rounded-full ring-2 ring-background"
+                        style={{ backgroundColor: ac.dot }}
+                        aria-hidden="true"
+                      />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="text-sm font-semibold tracking-tight text-foreground/95">{a.name}</p>
+                        <span className="text-[11px] font-mono text-muted-foreground">{String(idx + 1).padStart(2, "0")}</span>
+                      </div>
+                      <p className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground">{a.role}</p>
+                    </div>
                   </div>
-                  <p className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground">{a.role}</p>
-                </div>
-              </div>
-            </motion.button>
-          );
-        })}
+                </motion.button>
+              );
+            })}
+          </div>
+        </div>
+
+        <p className="mt-3 text-[11px] font-mono text-muted-foreground">
+          Pipeline: Intake → Verification → Interview → Support
+        </p>
       </div>
 
       <div className="mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -173,17 +302,29 @@ export default function AgentsIMChat() {
           <AnimatePresence mode="wait">
             <motion.div
               key={active}
-              className="panel panel-sharp panel-topline p-6 md:p-7"
-              initial={reduce ? undefined : { opacity: 0, y: 10 }}
+              className="panel panel-sharp panel-topline p-6 md:p-7 relative overflow-hidden"
+              initial={reduce ? undefined : { opacity: 0, y: 14 }}
               animate={reduce ? undefined : { opacity: 1, y: 0 }}
-              exit={reduce ? undefined : { opacity: 0, y: 10 }}
-              transition={{ duration: 0.22, ease: "easeOut" }}
+              exit={reduce ? undefined : { opacity: 0, y: 14 }}
+              transition={{ duration: 0.28, ease: "easeOut" }}
             >
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute -inset-x-10 -top-14 h-32 opacity-70"
+                style={{
+                  background: `radial-gradient(500px 180px at 18% 50%, ${accent.glow}, transparent 65%)`,
+                }}
+              />
               <div className="flex items-start justify-between gap-6">
                 <div className="flex items-start gap-4 min-w-0">
                   <div className="relative h-14 w-14 overflow-hidden rounded-[12px] shrink-0">
                     <Image src={agent.src} alt={`${agent.name} portrait`} fill sizes="56px" className="object-cover" />
                     <div className="absolute inset-0 ring-1 ring-black/10 dark:ring-white/10" aria-hidden="true" />
+                    <span
+                      className="absolute -right-1 -bottom-1 h-3.5 w-3.5 rounded-full ring-2 ring-background"
+                      style={{ backgroundColor: accent.dot }}
+                      aria-hidden="true"
+                    />
                   </div>
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
@@ -193,7 +334,14 @@ export default function AgentsIMChat() {
                     <p className="mt-2 text-sm text-muted-foreground">{agent.oneLine}</p>
                     <div className="mt-4 flex flex-wrap gap-2">
                       {agent.chips.map((c) => (
-                        <span key={c} className="bg-background/10 px-3 py-2 text-xs font-mono text-muted-foreground">
+                        <span
+                          key={c}
+                          className="px-3 py-2 text-xs font-mono"
+                          style={{
+                            backgroundColor: accent.chipBg,
+                            color: "rgba(255,255,255,0.82)",
+                          }}
+                        >
                           {c}
                         </span>
                       ))}
@@ -260,7 +408,12 @@ export default function AgentsIMChat() {
                   key={p}
                   type="button"
                   onClick={() => runPrompt(p)}
-                  className="bg-background/10 hover:bg-background/20 px-3 py-2 text-xs font-mono text-foreground/85 transition-colors focus:outline-none focus:ring-2 focus:ring-ring/50"
+                  className="px-3 py-2 text-xs font-mono transition-colors focus:outline-none focus:ring-2 focus:ring-ring/50"
+                  style={{
+                    backgroundColor: "rgba(255,255,255,0.06)",
+                    color: "rgba(255,255,255,0.86)",
+                    border: `1px solid ${accent.ring}`,
+                  }}
                 >
                   {p}
                 </button>
@@ -282,9 +435,14 @@ export default function AgentsIMChat() {
                       className={[
                         "max-w-[92%] rounded-[18px] px-4 py-3 text-sm leading-snug shadow-[0_1px_0_rgba(0,0,0,0.06)] dark:shadow-none",
                         m.from === "user"
-                          ? "ml-auto bg-violet-400/15 text-foreground/95"
+                          ? "ml-auto text-foreground/95"
                           : "mr-auto bg-background/10 text-foreground/90",
                       ].join(" ")}
+                      style={
+                        m.from === "user"
+                          ? { backgroundColor: accent.userBubble }
+                          : undefined
+                      }
                     >
                       {m.text}
                     </motion.div>
@@ -315,9 +473,13 @@ export default function AgentsIMChat() {
               </div>
               <button
                 type="button"
-                className="inline-flex items-center justify-center rounded-[14px] bg-primary text-primary-foreground px-4 py-3 text-sm font-medium hover:opacity-95 transition-opacity focus:outline-none focus:ring-2 focus:ring-ring/60"
+                className="inline-flex items-center justify-center rounded-[14px] px-4 py-3 text-sm font-medium hover:opacity-95 transition-opacity focus:outline-none focus:ring-2 focus:ring-ring/60"
                 aria-label="Send message"
                 onClick={() => runPrompt(agent.prompts[0]!)}
+                style={{
+                  background: accent.buttonBg,
+                  color: "rgba(255,255,255,0.92)",
+                }}
               >
                 Send
               </button>
@@ -337,5 +499,61 @@ function seedMessages(agent: AgentKey): Msg[] {
   if (agent === "david") return [...base, { id: "s2", from: "user", text: "Run verification and link evidence" }, { id: "s3", from: "agent", text: RESPONSES.david("Run verification and link evidence") }];
   if (agent === "ella") return [...base, { id: "s2", from: "user", text: "Generate a scorecard" }, { id: "s3", from: "agent", text: RESPONSES.ella("Generate a scorecard") }];
   return [...base, { id: "s2", from: "user", text: "What’s the current status?" }, { id: "s3", from: "agent", text: RESPONSES.mark("What’s the current status?") }];
+}
+
+function accentFor(key: AgentKey) {
+  // Airbnb-colorful accents, still enterprise.
+  if (key === "jackie") {
+    return {
+      stroke: "rgba(236,72,153,0.85)", // pink
+      ring: "rgba(236,72,153,0.35)",
+      dot: "rgba(236,72,153,0.95)",
+      glow: "rgba(236,72,153,0.24)",
+      chipBg: "rgba(236,72,153,0.16)",
+      userBubble: "rgba(236,72,153,0.16)",
+      buttonBg: "linear-gradient(135deg, rgba(236,72,153,0.65), rgba(167,139,250,0.55))",
+    };
+  }
+  if (key === "david") {
+    return {
+      stroke: "rgba(245,158,11,0.85)", // amber
+      ring: "rgba(245,158,11,0.35)",
+      dot: "rgba(245,158,11,0.95)",
+      glow: "rgba(245,158,11,0.22)",
+      chipBg: "rgba(245,158,11,0.14)",
+      userBubble: "rgba(245,158,11,0.14)",
+      buttonBg: "linear-gradient(135deg, rgba(245,158,11,0.62), rgba(236,72,153,0.45))",
+    };
+  }
+  if (key === "ella") {
+    return {
+      stroke: "rgba(34,211,238,0.85)", // cyan
+      ring: "rgba(34,211,238,0.32)",
+      dot: "rgba(34,211,238,0.95)",
+      glow: "rgba(34,211,238,0.20)",
+      chipBg: "rgba(34,211,238,0.14)",
+      userBubble: "rgba(34,211,238,0.14)",
+      buttonBg: "linear-gradient(135deg, rgba(34,211,238,0.60), rgba(99,102,241,0.50))",
+    };
+  }
+  return {
+    stroke: "rgba(34,197,94,0.85)", // green
+    ring: "rgba(34,197,94,0.32)",
+    dot: "rgba(34,197,94,0.95)",
+    glow: "rgba(34,197,94,0.20)",
+    chipBg: "rgba(34,197,94,0.14)",
+    userBubble: "rgba(34,197,94,0.14)",
+    buttonBg: "linear-gradient(135deg, rgba(34,197,94,0.60), rgba(34,211,238,0.45))",
+  };
+}
+
+function segmentPaths() {
+  // Four fixed points across the selector (percent space), slight curve for “signal”.
+  // x: 10 → 37 → 64 → 90, y: 14
+  return [
+    "M 10 14 C 18 10, 28 10, 37 14",
+    "M 37 14 C 45 10, 55 10, 64 14",
+    "M 64 14 C 72 10, 82 10, 90 14",
+  ];
 }
 
