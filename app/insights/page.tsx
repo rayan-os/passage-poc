@@ -1,4 +1,3 @@
-import SectionHeader from "@/components/SectionHeader";
 import Link from "next/link";
 
 const insights = [

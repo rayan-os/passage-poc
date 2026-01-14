@@ -17,7 +17,7 @@ const spaceMono = Space_Mono({
   display: "swap",
 });
 
-// Using Inter as display font (can be swapped for a premium display font later)
+// Display font: clean sans, modern product feel.
 const display = Inter({
   variable: "--font-display",
   subsets: ["latin"],
@@ -38,10 +38,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.variable} ${spaceMono.variable} ${display.variable} font-sans antialiased bg-white`}
+        className={`${inter.variable} ${spaceMono.variable} ${display.variable} font-sans min-h-screen`}
       >
         <Navigation />
-        <main>{children}</main>
+        <main className="relative">{children}</main>
         <BigFooter />
       </body>
     </html>

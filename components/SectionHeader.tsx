@@ -10,7 +10,7 @@ export default function SectionHeader({ label, title, description }: SectionHead
       <p className="section-label">{label}</p>
       <h2 className="font-display text-3xl md:text-4xl font-bold mb-6">{title}</h2>
       {description && (
-        <p className="text-zinc-600 text-lg">{description}</p>
+        <p className="text-muted-foreground text-lg">{description}</p>
       )}
     </div>
   );
