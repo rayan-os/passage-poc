@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import Noise from "@/components/landing/Noise";
-import HeroControlPlane from "@/components/landing/HeroControlPlane";
 import AdmissionOSHeaderGraphic from "@/components/landing/AdmissionOSHeaderGraphic";
+import MoonDotsHeroVisual from "@/components/landing/MoonDotsHeroVisual";
 import { ACCENT, COPY } from "@/components/landing/copy";
 
 export default function Hero() {
@@ -106,7 +106,7 @@ export default function Hero() {
           </div>
 
           <div className="col-span-12 lg:col-span-6 mt-12 lg:mt-0">
-            <HeroControlPlane />
+            <MoonDotsHeroVisual />
           </div>
         </div>
       </div>
