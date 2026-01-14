@@ -6,6 +6,7 @@ import PlatformUIShowcase from "@/components/landing/PlatformUIShowcase";
 import ProofSection from "@/components/landing/ProofSection";
 import IntegrationsGrid from "@/components/landing/IntegrationsGrid";
 import AgentsIMChat from "@/components/landing/AgentsIMChat";
+import OversightResearch from "@/components/landing/OversightResearch";
 import SectorsEmpower from "@/components/landing/SectorsEmpower";
 import OperatorsSection from "@/components/landing/OperatorsSection";
 
@@ -30,6 +31,8 @@ export default function Home() {
       <Section id="agents" eyebrow="Agents" title={COPY.agents.header} subtitle={COPY.agents.body}>
         <AgentsIMChat />
       </Section>
+
+      <OversightResearch />
 
       <ProofSection />
 
