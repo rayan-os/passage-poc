@@ -130,81 +130,109 @@ export default function AgentsIMChat() {
         <span className="h-2 w-2 rounded-full bg-violet-400/70 motion-safe:[animation:status-pulse_3.1s_ease-in-out_infinite]" aria-hidden="true" />
       </div>
 
+      {/* Agent selector (horizontal) */}
+      <div className="mt-7 grid grid-cols-2 md:grid-cols-4 gap-3">
+        {AGENTS.map((a) => {
+          const isActive = a.key === active;
+          return (
+            <motion.button
+              key={a.key}
+              type="button"
+              onClick={() => setActive(a.key)}
+              className={[
+                "text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+                "bg-background/10 hover:bg-background/15 transition-colors",
+                "px-4 py-3",
+                isActive ? "panel-topline" : "border-t border-transparent",
+              ].join(" ")}
+              initial={false}
+              animate={reduce ? undefined : { opacity: isActive ? 1 : 0.7 }}
+              transition={{ duration: 0.18, ease: "easeOut" }}
+            >
+              <div className="flex items-center gap-3">
+                <div className="relative h-10 w-10 overflow-hidden rounded-[12px] shrink-0">
+                  <Image src={a.src} alt={`${a.name} portrait`} fill sizes="40px" className="object-cover" />
+                  <div className="absolute inset-0 ring-1 ring-black/10 dark:ring-white/10" aria-hidden="true" />
+                </div>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm font-semibold tracking-tight text-foreground/95">{a.name}</p>
+                    {isActive && <span className="h-1.5 w-1.5 rounded-full bg-violet-400/80" aria-hidden="true" />}
+                  </div>
+                  <p className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground">{a.role}</p>
+                </div>
+              </div>
+            </motion.button>
+          );
+        })}
+      </div>
+
       <div className="mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Agent modules */}
+        {/* Active agent detail */}
         <div className="lg:col-span-6">
-          <div className="space-y-4">
-            {AGENTS.map((a) => {
-              const isActive = a.key === active;
-              return (
-                <motion.button
-                  key={a.key}
-                  type="button"
-                  layout
-                  onClick={() => setActive(a.key)}
-                  className={[
-                    "w-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
-                    "panel panel-sharp p-6",
-                    isActive ? "panel-topline" : "",
-                  ].join(" ")}
-                >
-                  <div className="flex items-start justify-between gap-6">
-                    <div className="flex items-start gap-4 min-w-0">
-                      <div className="relative h-14 w-14 overflow-hidden rounded-[12px] shrink-0">
-                        <Image src={a.src} alt={`${a.name} portrait`} fill sizes="56px" className="object-cover" />
-                        <div className="absolute inset-0 ring-1 ring-black/10 dark:ring-white/10" aria-hidden="true" />
-                      </div>
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-2">
-                          <p className="text-xl font-semibold tracking-tight text-foreground/95">{a.name}</p>
-                          <span className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground">{a.role}</span>
-                          {isActive && <span className="h-1.5 w-1.5 rounded-full bg-violet-400/80" aria-hidden="true" />}
-                        </div>
-                        <p className="mt-2 text-sm text-muted-foreground">{a.oneLine}</p>
-                        <div className="mt-4 flex flex-wrap gap-2">
-                          {a.chips.map((c) => (
-                            <span key={c} className="bg-background/10 px-3 py-2 text-xs font-mono text-muted-foreground">
-                              {c}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={active}
+              className="panel panel-sharp panel-topline p-6 md:p-7"
+              initial={reduce ? undefined : { opacity: 0, y: 10 }}
+              animate={reduce ? undefined : { opacity: 1, y: 0 }}
+              exit={reduce ? undefined : { opacity: 0, y: 10 }}
+              transition={{ duration: 0.22, ease: "easeOut" }}
+            >
+              <div className="flex items-start justify-between gap-6">
+                <div className="flex items-start gap-4 min-w-0">
+                  <div className="relative h-14 w-14 overflow-hidden rounded-[12px] shrink-0">
+                    <Image src={agent.src} alt={`${agent.name} portrait`} fill sizes="56px" className="object-cover" />
+                    <div className="absolute inset-0 ring-1 ring-black/10 dark:ring-white/10" aria-hidden="true" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <p className="text-2xl font-semibold tracking-tight text-foreground/95">{agent.name}</p>
+                      <span className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground">{agent.role}</span>
                     </div>
-
-                    <div className="hidden md:flex flex-col items-end gap-2 shrink-0">
-                      <span className="text-[11px] font-mono text-muted-foreground">last run</span>
-                      <span className="text-xs font-mono text-foreground/80">09:41</span>
+                    <p className="mt-2 text-sm text-muted-foreground">{agent.oneLine}</p>
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {agent.chips.map((c) => (
+                        <span key={c} className="bg-background/10 px-3 py-2 text-xs font-mono text-muted-foreground">
+                          {c}
+                        </span>
+                      ))}
                     </div>
                   </div>
+                </div>
 
-                  <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="bg-background/10 rounded-[12px] p-4">
-                      <p className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground">Inputs</p>
-                      <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-                        {a.inputs.map((x) => (
-                          <li key={x} className="flex items-center justify-between">
-                            <span>{x}</span>
-                            <span className="text-foreground/60 font-mono">→</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div className="bg-background/10 rounded-[12px] p-4">
-                      <p className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground">Outputs</p>
-                      <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-                        {a.outputs.map((x) => (
-                          <li key={x} className="flex items-center justify-between">
-                            <span>{x}</span>
-                            <span className="text-foreground/60 font-mono">✓</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                </motion.button>
-              );
-            })}
-          </div>
+                <div className="hidden md:flex flex-col items-end gap-2 shrink-0">
+                  <span className="text-[11px] font-mono text-muted-foreground">last run</span>
+                  <span className="text-xs font-mono text-foreground/80">09:41</span>
+                </div>
+              </div>
+
+              <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-background/10 rounded-[12px] p-4">
+                  <p className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground">Inputs</p>
+                  <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+                    {agent.inputs.map((x) => (
+                      <li key={x} className="flex items-center justify-between">
+                        <span>{x}</span>
+                        <span className="text-foreground/60 font-mono">→</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="bg-background/10 rounded-[12px] p-4">
+                  <p className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground">Outputs</p>
+                  <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+                    {agent.outputs.map((x) => (
+                      <li key={x} className="flex items-center justify-between">
+                        <span>{x}</span>
+                        <span className="text-foreground/60 font-mono">✓</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </motion.div>
+          </AnimatePresence>
         </div>
 
         {/* iMessage-like chat */}

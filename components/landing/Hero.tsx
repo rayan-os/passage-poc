@@ -8,6 +8,8 @@ import { ACCENT, COPY } from "@/components/landing/copy";
 
 export default function Hero() {
   const reduce = useReducedMotion();
+  const header = COPY.hero.header;
+  const hasAdmissionsTail = /for admissions$/i.test(header);
 
   return (
     <section className="relative overflow-hidden">
@@ -30,12 +32,19 @@ export default function Hero() {
             </motion.p>
 
             <motion.h1
-              className="mt-2 font-display text-5xl md:text-6xl font-bold tracking-tight leading-[1.02]"
+              className="mt-2 font-display text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight leading-[1.06] max-w-[18ch]"
               initial={reduce ? undefined : { opacity: 0, y: 10 }}
               animate={reduce ? undefined : { opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: "easeOut", delay: 0.05 }}
             >
-              {COPY.hero.header}
+              {hasAdmissionsTail ? (
+                <>
+                  <span className="block">{header.replace(/ for admissions$/i, "")}</span>
+                  <span className="block text-muted-foreground">for admissions</span>
+                </>
+              ) : (
+                header
+              )}
             </motion.h1>
 
             <motion.p

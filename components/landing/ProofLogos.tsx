@@ -7,12 +7,22 @@ export default function ProofLogos({ count }: { count: number }) {
   const reduce = useReducedMotion();
   const [paused, setPaused] = useState(false);
 
+  const UNI = useMemo(
+    () => [
+      { name: "Stanford", mark: "S" },
+      { name: "MIT", mark: "MIT" },
+      { name: "Harvard", mark: "H" },
+      { name: "Oxford", mark: "OX" },
+      { name: "Cambridge", mark: "C" },
+      { name: "UofT", mark: "UT" },
+    ],
+    []
+  );
+
   const logos = useMemo(
     () =>
-      Array.from({ length: count }).map((_, i) =>
-        ["INSTITUTION", "PROGRAM", "UNIVERSITY", "SYSTEM", "OFFICE"][i % 5] + ` ${i + 1}`
-      ),
-    [count]
+      Array.from({ length: Math.max(6, count) }).map((_, i) => UNI[i % UNI.length]!),
+    [UNI, count]
   );
 
   // Two lanes to create continuity.
@@ -28,8 +38,11 @@ export default function ProofLogos({ count }: { count: number }) {
       style={{ willChange: "transform" }}
     >
       {[...logos, ...logos].map((l, idx) => (
-        <div key={`${l}-${idx}`} className="h-9 px-4 bg-background/10 flex items-center">
-          <span className="text-[11px] font-mono uppercase tracking-wider text-foreground/35">{l}</span>
+        <div key={`${l.name}-${idx}`} className="h-10 px-4 bg-background/10 flex items-center gap-3">
+          <span className="h-6 w-6 rounded-full bg-foreground/10 dark:bg-background/10 flex items-center justify-center">
+            <span className="text-[10px] font-mono text-foreground/45">{l.mark}</span>
+          </span>
+          <span className="text-[11px] font-mono uppercase tracking-wider text-foreground/35">{l.name}</span>
         </div>
       ))}
     </motion.div>

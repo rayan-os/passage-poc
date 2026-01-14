@@ -72,7 +72,7 @@ export const COPY = {
         org: "Institution",
       },
     ],
-    logosCount: 10,
+    logosCount: 6,
   },
   integrations: {
     header: "Works with what you already use",

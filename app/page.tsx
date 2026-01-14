@@ -3,7 +3,6 @@ import Hero from "@/components/landing/Hero";
 import { Section } from "@/components/landing/Layout";
 import { COPY } from "@/components/landing/copy";
 import PlatformUIShowcase from "@/components/landing/PlatformUIShowcase";
-import OutcomeStrip from "@/components/landing/OutcomeStrip";
 import ProofSection from "@/components/landing/ProofSection";
 import IntegrationsGrid from "@/components/landing/IntegrationsGrid";
 import AgentsIMChat from "@/components/landing/AgentsIMChat";
@@ -26,10 +25,6 @@ export default function Home() {
 
       <Section id="platform" eyebrow="Platform" title={COPY.platformClaim.header} subtitle={COPY.platformClaim.body}>
         <PlatformUIShowcase />
-      </Section>
-
-      <Section id="outcomes" eyebrow="Outcomes" title={COPY.outcomeStrip.header} subtitle={COPY.outcomeStrip.body}>
-        <OutcomeStrip />
       </Section>
 
       <Section id="agents" eyebrow="Agents" title={COPY.agents.header} subtitle={COPY.agents.body}>
