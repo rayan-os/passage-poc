@@ -4,6 +4,7 @@ import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import Noise from "@/components/landing/Noise";
 import HeroControlPlane from "@/components/landing/HeroControlPlane";
+import AdmissionOSHeaderGraphic from "@/components/landing/AdmissionOSHeaderGraphic";
 import { ACCENT, COPY } from "@/components/landing/copy";
 
 export default function Hero() {
@@ -37,6 +38,14 @@ export default function Hero() {
             >
               {COPY.hero.header}
             </motion.h1>
+
+            <motion.div
+              initial={reduce ? undefined : { opacity: 0, y: 10 }}
+              animate={reduce ? undefined : { opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: "easeOut", delay: 0.08 }}
+            >
+              <AdmissionOSHeaderGraphic />
+            </motion.div>
 
             <motion.p
               className="mt-6 text-lg md:text-xl text-muted-foreground max-w-xl"
