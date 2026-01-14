@@ -6,8 +6,9 @@ import PlatformUIShowcase from "@/components/landing/PlatformUIShowcase";
 import OutcomeStrip from "@/components/landing/OutcomeStrip";
 import ProofSection from "@/components/landing/ProofSection";
 import IntegrationsGrid from "@/components/landing/IntegrationsGrid";
-import FinalCTABand from "@/components/landing/FinalCTABand";
-import AgentsGraphChat from "@/components/landing/AgentsGraphChat";
+import AgentsIMChat from "@/components/landing/AgentsIMChat";
+import SectorsEmpower from "@/components/landing/SectorsEmpower";
+import OperatorsSection from "@/components/landing/OperatorsSection";
 
 const PromptConsole = dynamic(() => import("@/components/landing/PromptConsole"), {
   ssr: false,
@@ -32,7 +33,7 @@ export default function Home() {
       </Section>
 
       <Section id="agents" eyebrow="Agents" title={COPY.agents.header} subtitle={COPY.agents.body}>
-        <AgentsGraphChat />
+        <AgentsIMChat />
       </Section>
 
       <ProofSection />
@@ -45,8 +46,12 @@ export default function Home() {
         <PromptConsole />
       </Section>
 
-      <Section id="demo" eyebrow="Demo" title={COPY.team.finalCta.header} subtitle="See the platform end to end.">
-        <FinalCTABand />
+      <Section id="demo" eyebrow="Demo" title="See Passage in action" subtitle="A governed decision pipeline for regulated workflows.">
+        <SectorsEmpower />
+      </Section>
+
+      <Section id="team" eyebrow="Team" title="Built by operators and engineers" subtitle="Placeholders included — replace with verified company and funding claims.">
+        <OperatorsSection />
       </Section>
     </>
   );
