@@ -221,34 +221,30 @@ export default function AdminSidebarProof() {
                   { label: "All applications", hint: "Everything in scope" },
                   { label: "My queue", hint: "Assigned to you" },
                   { label: "Flagged", hint: "Needs attention" },
-                ].map((opt) => {
-                  const selected = opt.label === "All applications";
-                  return (
-                    <button
-                      key={opt.label}
-                      type="button"
-                      onClick={() => setDropdownOpen(false)}
-                      className={cx(
-                        "w-full px-3 py-2.5 text-left",
-                        "flex items-center justify-between gap-3",
-                        "transition-colors duration-200",
-                        "hover:bg-white/[0.05]"
-                      )}
-                      role="option"
-                      aria-selected={selected}
-                    >
-                      <span className="min-w-0">
-                        <div className="truncate text-[13px] text-zinc-100">{opt.label}</div>
-                        <div className="truncate text-[12px] text-zinc-400">{opt.hint}</div>
-                      </span>
-                      {selected ? (
-                        <span className="text-[12px] text-zinc-300">Selected</span>
-                      ) : (
-                        <span className="text-[12px] text-zinc-500"> </span>
-                      )}
-                    </button>
-                  );
-                })}
+                ].map((opt) => (
+                  <button
+                    key={opt.label}
+                    type="button"
+                    onClick={() => setDropdownOpen(false)}
+                    className={cx(
+                      "w-full px-3 py-2.5 text-left",
+                      "flex items-center justify-between gap-3",
+                      "transition-colors duration-200",
+                      "hover:bg-white/[0.05]"
+                    )}
+                    role="option"
+                  >
+                    <span className="min-w-0">
+                      <div className="truncate text-[13px] text-zinc-100">{opt.label}</div>
+                      <div className="truncate text-[12px] text-zinc-400">{opt.hint}</div>
+                    </span>
+                    {opt.label === "All applications" ? (
+                      <span className="text-[12px] text-zinc-300">Selected</span>
+                    ) : (
+                      <span className="text-[12px] text-zinc-500"> </span>
+                    )}
+                  </button>
+                ))}
               </div>
             </div>
           </div>
